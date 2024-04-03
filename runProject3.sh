@@ -1,0 +1,1 @@
+sbcl --script ./Project3.lisp
