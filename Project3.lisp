@@ -68,16 +68,20 @@
 (defun boolean-xor (a b)
     (cond 
         ((and a b) NIL)
-        ((or (and a b) (or a b)) T)))
+        ((or (and a b) (or a b)) T)
+        ((and (not a) (not b)) NIL)))
 
-;; (format t "boolean-xor: ~a~%" (boolean-xor t nil))
+;; (format t "boolean-xor: ~a~%" (boolean-xor T NIL))
 
 ;; Return the implication of a and b
 ;; Examples:
 ;;  (boolean-implies t nil) => nil
 ;;  (boolean-implies nil nil) => t
-;; (defun boolean-implies (a b)
-;;     (cond
-;;         ((and a b) T)
-;;         )
-;; )
+(defun boolean-implies (a b)
+    (cond
+        ((and a b) T)
+        ((and a (not b)) NIL)
+        ((and (not a) b) T)
+        ((and (not a) (not b)) T)))
+
+(format t "boolean-implies: ~a~%" (boolean-implies T NIL))
