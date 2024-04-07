@@ -1,6 +1,6 @@
 # bug-free-waddle
 
-![Project Requirements](./Screenshot%202024-04-03%20at%203.37.27 PM.png)
+![Project Requirements](./projectRequirements.png)
 ## Getting Started
 
 ### Files
