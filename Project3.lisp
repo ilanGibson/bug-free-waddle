@@ -7,7 +7,7 @@
 (defun set-member (set item)
     (cond
         ((null set) NIL)
-        ((eq (car set) item) T)
+        ((equal (car set) item) T)
         (T (set-member (cdr set) item))))
 
 ;; (format t "set-member: ~a~%" (set-member '(1 2) 1))
@@ -73,6 +73,7 @@
 
 ;; (format t "boolean-xor: ~a~%" (boolean-xor T NIL))
 
+
 ;; Return the implication of a and b
 ;; Examples:
 ;;  (boolean-implies t nil) => nil
@@ -84,4 +85,18 @@
         ((and (not a) b) T)
         ((and (not a) (not b)) T)))
 
-(format t "boolean-implies: ~a~%" (boolean-implies T NIL))
+;; (format t "boolean-implies: ~a~%" (boolean-implies T NIL))
+
+
+;; Return the bi-implication (if and only if) of a and b
+;; Examples:
+;;  (boolean-iff t nil) => nil
+;;  (boolean-iff nil nil) => t
+(defun boolean-iff (a b)
+    (cond
+        ((and a b) T)
+        ((and (not a) b) NIL)
+        ((and a (not b)) NIL)
+        ((and (not a) (not b)) T)))
+
+(format t "boolean-iff: ~a~%" (boolean-iff NIL NIL))
