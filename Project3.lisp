@@ -100,3 +100,24 @@
         ((and (not a) (not b)) T)))
 
 (format t "boolean-iff: ~a~%" (boolean-iff NIL NIL))
+
+;; Evaluate a boolean expression.
+ ;; Handle NOT, AND, OR, XOR, IMPLIES, and IFF.
+ ;; Examples:
+ ;;  (boolean-eval '(and t nil)) => nil
+ ;;  (boolean-eval '(and t (or nil t)) => t
+ ;; (defun boolean-eval (exp)
+ ;;     (format t "exp: ~a~%" exp)
+
+ ;;     (cond
+ ;;         ((null exp) NIL)
+ ;;         ((eq (car exp) t) T)
+ ;;         ((eq (car exp) 'nil) NIL)
+ ;;         ((eq (car exp) 'not) (not (boolean-eval (cdr exp))))
+ ;;         ((eq (car exp) 'and) (and (car (cdr exp)) (boolean-eval (car (cdr (cdr exp))))))
+ ;;         ((eq (car exp) 'or) (or (car exp) (boolean-eval (cdr exp))))
+ ;;         ((eq (car exp) 'xor) (boolean-xor (boolean-eval (car (cdr exp))) (boolean-eval (cdr (cdr exp)))))
+ ;;         ((eq (car exp) 'implies) (boolean-implies (boolean-eval (car (cdr exp))) (boolean-eval (cdr (cdr exp)))))
+ ;;         ((eq (car exp) 'iff) (boolean-iff (boolean-eval (car (cdr exp))) (boolean-eval (cdr (cdr exp)))))))
+
+ ;; (format t "boolean-eval: ~a~%" (boolean-eval '(and t t))) 
