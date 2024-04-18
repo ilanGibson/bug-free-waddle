@@ -113,27 +113,28 @@
     ;; (if (listp exp)
     ;;     (progn
     ;;         (format t "first exp: ~a~%" (first exp))
-    ;;         (format t "cdr exp: ~a~%" (cdr exp))
-    ;;         (format t "first cdr exp: ~a~%" (first (cdr exp)))
-    ;;         (format t "cdr cdr exp: ~a~%" (cdr (cdr exp)))))
+    ;;         (format t "cdr exp: ~a~%" (cdr exp))))
+            ;; (format t "first cdr exp: ~a~%" (first (cdr exp)))
+            ;; (format t "cdr cdr exp: ~a~%" (cdr (cdr exp)))))
 
 
 
     (cond
-        ((equal exp T) T) ;; covers case of boolean-eval T
-        ((equal exp nil) nil) ;; covers case of boolean-eval nil
-        ((equal exp '(T)) T) ;; covers case of boolean-eval '(T)
-        ((equal exp '(nil)) nil) ;; covers case of boolean-eval '(nil)
+        ((equal exp T) T) ;; covers base case of boolean-eval T
+        ((equal exp nil) nil) ;; covers base case of boolean-eval nil
+        ((equal exp '(T)) T) ;; covers base case of boolean-eval '(T)
+        ((equal exp '(nil)) nil) ;; covers base case of boolean-eval '(nil)
 
         ;; recursive calls to boolean-eval
         ;; if the first element of the expression is 'not, 'or, 'and, 'xor, 'implies, or 'iff
         ;; then call boolean-eval on the first and second elements of the expression
         ((equal (first exp) 'not) (not (boolean-eval (first (cdr exp)))))
-        ((equal (first exp) 'or) (or (boolean-eval (first (cdr exp))) (boolean-eval (cdr (cdr exp)))))
-        ((equal (first exp) 'and) (and (boolean-eval (first (cdr exp))) (boolean-eval (cdr (cdr exp)))))
-        ((equal (first exp) 'xor) (boolean-xor (boolean-eval (first (cdr exp))) (boolean-eval (cdr (cdr exp)))))
-        ((equal (first exp) 'implies) (boolean-implies (boolean-eval (first (cdr exp))) (boolean-eval (cdr (cdr exp)))))
-        ((equal (first exp) 'iff ) (boolean-iff (boolean-eval (first (cdr exp))) (boolean-eval (cdr (cdr exp)))))))
+        ((equal (first exp) 'or) (or (boolean-eval (first (cdr exp))) (boolean-eval (second (cdr exp)))))
+        ((equal (first exp) 'and) (and (boolean-eval (first (cdr exp))) (boolean-eval (second (cdr exp)))))
+        ((equal (first exp) 'xor) (boolean-xor (boolean-eval (first (cdr exp))) (boolean-eval (second (cdr exp)))))
+        ((equal (first exp) 'implies) (boolean-implies (boolean-eval (first (cdr exp))) (boolean-eval (second (cdr exp)))))
+        ((equal (first exp) 'iff ) (boolean-iff (boolean-eval (first (cdr exp))) (boolean-eval (second (cdr exp)))))
+        (T (format t "not a valid lisp expression"))))
 
 
 ;; t/nil boolean-eval tests
@@ -154,29 +155,35 @@
 (assert (equal (boolean-eval '(or (or T nil) (or nil (or T (or nil T))))) T) nil "or t (or nil (or t (or nil t))) should be T")
 
 
-;; ;; and boolean-eval tests
+;; and boolean-eval tests
 (assert (equal (boolean-eval '(and T nil)) nil) nil "and T nil should be nil")
 (assert (equal (boolean-eval '(and nil nil)) nil) nil "and nil nil should be nil")
 (assert (equal (boolean-eval '(and nil T)) nil) nil "and nil T should be nil")
 (assert (equal (boolean-eval '(and T T)) T) nil "and T T should be T")
 (assert (equal (boolean-eval '(and (and nil T) nil)) nil) nil "and (and nil t) t should be nil")
-(assert (equal (boolean-eval '((and nil (and T (and nil T))))) nil) nil "and nil (and t (and nil t)) should be nil")
+(assert (equal (boolean-eval '(and nil (and T (and nil T)))) nil) nil "and nil (and t (and nil t)) should be nil")
 (assert (equal (boolean-eval '(and T (and nil (and T (and nil T))))) nil) nil "and t (and nil (and t (and nil t))) should be nil")
 
-;; ;; xor boolean-eval tests
+;; xor boolean-eval tests
 (assert (equal (boolean-eval '(xor T nil)) T) nil "xor T nil should be T")
 (assert (equal (boolean-eval '(xor nil nil)) nil) nil "xor nil nil should be nil")
 (assert (equal (boolean-eval '(xor nil T)) T) nil "xor nil T should be T")
 (assert (equal (boolean-eval '(xor T T)) nil) nil "xor T T should be nil")
 
-;; ;; implies boolean-eval testss
+;; implies boolean-eval tests
 (assert (equal (boolean-eval '(implies T nil)) nil) nil "implies T nil should be nil")
 (assert (equal (boolean-eval '(implies nil nil)) T) nil "implies nil nil should be T")
 (assert (equal (boolean-eval '(implies nil T)) T) nil "implies nil T should be T")
 (assert (equal (boolean-eval '(implies T T)) T) nil "implies T T should be T")
 
-;; ;; iff boolean-eval tests
+;; iff boolean-eval tests
 (assert (equal (boolean-eval '(iff T nil)) nil) nil "iff T nil should be nil")
 (assert (equal (boolean-eval '(iff nil nil)) T) nil "iff nil nil should be T")
 (assert (equal (boolean-eval '(iff nil T)) nil) nil "iff nil T should be nil")
 (assert (equal (boolean-eval '(iff T T)) T) nil "iff T T should be T")
+
+;; random boolean-eval tests
+(assert (equal (boolean-eval '(not (or T nil))) nil) nil "not (or T nil) should be nil")
+(assert (equal (boolean-eval '(or (not T) (xor nil T))) T) nil "or (not T) (xor nil T) should be T")
+(assert (equal (boolean-eval '(and (not T) (xor nil T))) nil) nil "and (not T) (xor nil T) should be nil")
+(assert (equal (boolean-eval '(iff (not (or T nil)) (xor (and T T) nil))) nil) nil "iff (not (or T nil)) (xor (and T T) nil) should be nil")
